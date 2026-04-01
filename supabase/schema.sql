@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS campaigns (
 );
 
 -- Table des commandes / destinataires
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS notif_orders (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id   UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
     email         TEXT,
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 
 -- Index pour les requêtes fréquentes
-CREATE INDEX IF NOT EXISTS idx_orders_campaign_id ON orders(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_notif_orders_campaign_id ON notif_orders(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_notif_orders_status ON notif_orders(status);
 
 -- Mise à jour automatique de updated_at
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -39,6 +39,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER orders_updated_at
-    BEFORE UPDATE ON orders
+CREATE TRIGGER notif_orders_updated_at
+    BEFORE UPDATE ON notif_orders
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();

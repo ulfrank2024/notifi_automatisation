@@ -57,7 +57,7 @@ async def create_campaign(payload: MappingSchema):
 
     # Insertion par batch de 500
     for i in range(0, len(orders), 500):
-        db.table("orders").insert(orders[i:i + 500]).execute()
+        db.table("notif_orders").insert(orders[i:i + 500]).execute()
 
     return {"campaign_id": campaign_id, "inserted": len(orders)}
 
@@ -74,7 +74,7 @@ async def get_orders(campaign_id: str, page: int = 1, page_size: int = 50):
     db = get_supabase()
     offset = (page - 1) * page_size
     res = (
-        db.table("orders")
+        db.table("notif_orders")
         .select("*")
         .eq("campaign_id", campaign_id)
         .range(offset, offset + page_size - 1)
