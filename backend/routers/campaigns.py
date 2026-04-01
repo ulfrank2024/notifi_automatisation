@@ -1,3 +1,4 @@
+from collections import defaultdict
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from core.database import get_supabase
@@ -10,7 +11,19 @@ class MappingSchema(BaseModel):
     filename: str
     file_content_b64: str
     campaign_name: str
-    mapping: dict[str, str]  # ex: {"email": "Email_Contact", "first_name": "Nom", ...}
+    mapping: dict[str, str]
+
+
+def _aggregate_orders(orders: list[dict]) -> dict:
+    """Agrège les orders par campaign_id → dict de stats."""
+    counts = defaultdict(lambda: {"total": 0, "pending": 0, "in_progress": 0, "sent": 0, "error": 0})
+    for o in orders:
+        cid = o["campaign_id"]
+        counts[cid]["total"] += 1
+        status = o.get("status", "pending")
+        if status in counts[cid]:
+            counts[cid][status] += 1
+    return counts
 
 
 @router.post("/")
@@ -20,7 +33,6 @@ async def create_campaign(payload: MappingSchema):
     parsed = parse_file(payload.filename, content)
 
     db = get_supabase()
-
     campaign_res = (
         db.table("campaigns")
         .insert({"name": payload.campaign_name, "filename": payload.filename, "total_rows": parsed["total"]})
@@ -52,10 +64,9 @@ async def create_campaign(payload: MappingSchema):
 
 @router.get("/stats")
 async def global_stats():
-    """Stats globales pour le dashboard d'accueil."""
     db = get_supabase()
-    campaigns_res = db.table("campaigns").select("id", count="exact").execute()
-    orders_res = db.table("notif_orders").select("status").execute()
+    campaigns_res = db.table("campaigns").select("id").execute()
+    orders_res    = db.table("notif_orders").select("status").execute()
 
     orders = orders_res.data or []
     total   = len(orders)
@@ -64,7 +75,7 @@ async def global_stats():
     error   = sum(1 for o in orders if o["status"] == "error")
 
     return {
-        "total_campaigns": campaigns_res.count or 0,
+        "total_campaigns": len(campaigns_res.data or []),
         "total_contacts":  total,
         "pending":         pending,
         "sent":            sent,
@@ -75,15 +86,29 @@ async def global_stats():
 
 @router.get("/history")
 async def campaigns_history():
-    """Liste des campagnes avec stats par statut (via la vue campaign_stats)."""
+    """Campagnes + stats calculées côté Python (sans dépendance à la vue SQL)."""
     db = get_supabase()
-    res = db.table("campaign_stats").select("*").order("created_at", desc=True).execute()
-    return res.data
+    campaigns_res = db.table("campaigns").select("*").order("created_at", desc=True).execute()
+    orders_res    = db.table("notif_orders").select("campaign_id, status").execute()
+
+    counts = _aggregate_orders(orders_res.data or [])
+
+    result = []
+    for c in (campaigns_res.data or []):
+        stats = counts[c["id"]]
+        result.append({
+            **c,
+            "total_orders": stats["total"],
+            "pending":      stats["pending"],
+            "in_progress":  stats["in_progress"],
+            "sent":         stats["sent"],
+            "error":        stats["error"],
+        })
+    return result
 
 
 @router.get("/contacts")
 async def all_contacts(page: int = 1, page_size: int = 100):
-    """Tous les contacts de toutes les campagnes."""
     db = get_supabase()
     offset = (page - 1) * page_size
     res = (
@@ -94,6 +119,14 @@ async def all_contacts(page: int = 1, page_size: int = 100):
         .execute()
     )
     return res.data
+
+
+@router.delete("/{campaign_id}")
+async def delete_campaign(campaign_id: str):
+    """Supprime la campagne et tous ses contacts (CASCADE)."""
+    db = get_supabase()
+    db.table("campaigns").delete().eq("id", campaign_id).execute()
+    return {"deleted": True}
 
 
 @router.get("/{campaign_id}/orders")
