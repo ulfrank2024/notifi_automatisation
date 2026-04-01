@@ -5,6 +5,10 @@ from core.database import get_supabase
 router = APIRouter(prefix="/contacts", tags=["contacts"])
 
 
+class BulkDeletePayload(BaseModel):
+    ids: list[str]
+
+
 class ContactUpdate(BaseModel):
     first_name:   str | None = None
     last_name:    str | None = None
@@ -28,10 +32,19 @@ async def update_contact(contact_id: str, payload: ContactUpdate):
     return res.data[0]
 
 
+@router.delete("/bulk")
+async def bulk_delete(payload: BulkDeletePayload):
+    if not payload.ids:
+        raise HTTPException(status_code=400, detail="Aucun ID fourni.")
+    db = get_supabase()
+    db.table("notif_orders").delete().in_("id", payload.ids).execute()
+    return {"deleted": len(payload.ids)}
+
+
 @router.delete("/{contact_id}")
 async def delete_contact(contact_id: str):
     db = get_supabase()
-    res = db.table("notif_orders").delete().eq("id", contact_id).execute()
+    db.table("notif_orders").delete().eq("id", contact_id).execute()
     return {"deleted": True}
 
 
