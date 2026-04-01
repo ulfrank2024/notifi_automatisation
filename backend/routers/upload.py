@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File
-from ..services.parser import parse_file
+from services.parser import parse_file
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 

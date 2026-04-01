@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from ..core.database import get_supabase
-from ..services.parser import parse_file
+from core.database import get_supabase
+from services.parser import parse_file
 
 router = APIRouter(prefix="/campaigns", tags=["campaigns"])
 

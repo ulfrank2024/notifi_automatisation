@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .core.config import settings
-from .routers import upload, campaigns
+from core.config import settings
+from routers import upload, campaigns
 
 app = FastAPI(title="Notif-Flow API", version="1.0.0")
 
