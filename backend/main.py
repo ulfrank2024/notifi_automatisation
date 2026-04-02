@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
-from routers import upload, campaigns, contacts
+from core.security import require_auth
+from routers import auth, upload, campaigns, contacts
 
 app = FastAPI(title="Notif-Flow API", version="1.0.0")
 
@@ -13,9 +14,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(upload.router)
-app.include_router(campaigns.router)
-app.include_router(contacts.router)
+# Route publique — login
+app.include_router(auth.router)
+
+# Routes protégées — token JWT requis
+protected = {"dependencies": [Depends(require_auth)]}
+app.include_router(upload.router,    **protected)
+app.include_router(campaigns.router, **protected)
+app.include_router(contacts.router,  **protected)
 
 
 @app.get("/health")

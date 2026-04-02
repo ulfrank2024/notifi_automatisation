@@ -1,3 +1,5 @@
+import { useAuth } from '../context/AuthContext'
+
 const NAV = [
   { id: 'home',      icon: '📊', label: 'Tableau de bord' },
   { id: 'campaigns', icon: '📁', label: 'Campagnes'       },
@@ -18,23 +20,47 @@ const s = {
     border: active ? '1px solid #3a2800' : '1px solid transparent',
     transition: 'all 0.15s',
   }),
-  version: { marginTop: 'auto', padding: '0 10px', color: '#333', fontSize: '0.72rem' },
+  footer: { marginTop: 'auto', borderTop: '1px solid #1a1a1a', paddingTop: '12px' },
+  emailBadge: { padding: '8px 10px', color: '#555', fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  logoutBtn: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    padding: '9px 12px', borderRadius: '8px', cursor: 'pointer',
+    fontSize: '0.875rem', color: '#666', border: '1px solid transparent',
+    background: 'transparent', width: '100%', fontFamily: 'inherit',
+    transition: 'color 0.15s, background 0.15s',
+  },
+  version: { color: '#2a2a2a', fontSize: '0.7rem', padding: '6px 10px 0' },
 }
 
 export default function Sidebar({ active, onNav }) {
+  const { email, logout } = useAuth()
+
   return (
     <aside style={s.sidebar}>
       <div style={s.logo}>
         <span>⚡</span>
         <span style={s.logoText}>NOTIF-FLOW</span>
       </div>
+
       {NAV.map(({ id, icon, label }) => (
         <div key={id} style={s.item(active === id)} onClick={() => onNav(id)}>
           <span style={{ fontSize: '16px', minWidth: '20px', textAlign: 'center' }}>{icon}</span>
           {label}
         </div>
       ))}
-      <div style={s.version}>Jalon 1 — Beta</div>
+
+      <div style={s.footer}>
+        <div style={s.emailBadge}>👤 {email}</div>
+        <button
+          style={s.logoutBtn}
+          onClick={logout}
+          onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = '#1f0a0a' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#666';    e.currentTarget.style.background = 'transparent' }}
+        >
+          <span style={{ fontSize: '15px' }}>🚪</span> Déconnexion
+        </button>
+        <div style={s.version}>Jalon 1 — Beta</div>
+      </div>
     </aside>
   )
 }
