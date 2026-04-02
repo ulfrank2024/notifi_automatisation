@@ -70,3 +70,42 @@ button {
 /* Fade-in */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* =============================================
+   RESPONSIVE UTILITIES
+   ============================================= */
+
+/* Tables — scroll horizontal sur mobile */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Grille stats — s'adapte automatiquement */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* Page padding responsive */
+.page-pad { padding: 24px 16px; }
+
+@media (min-width: 768px) {
+  .page-pad { padding: 32px; }
+  .stats-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+}
+
+/* Cards full-width sur mobile */
+@media (max-width: 767px) {
+  /* Textes plus petits sur mobile */
+  body { font-size: 14px; }
+
+  /* Tableaux : réduire le padding des cellules */
+  td, th { padding: 9px 10px !important; font-size: 0.78rem !important; }
+
+  /* Inputs full width */
+  input[type="text"], input[type="email"], input[type="password"], select {
+    font-size: 16px !important; /* Évite le zoom iOS */
+  }
+
+  /* Bulk action bar — full width sur mobile */
+  .bulk-bar { left: 12px !important; right: 12px !important; transform: none !important; width: auto !important; }
+}
