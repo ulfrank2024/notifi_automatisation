@@ -11,7 +11,7 @@ const s = {
   title: { fontSize: '1.3rem', fontWeight: 700, color: '#fff' },
   sub: { color: '#666', fontSize: '0.85rem', marginTop: '3px' },
   search: { background: '#111', border: '1px solid #222', borderRadius: '8px', color: '#fff', padding: '9px 14px', fontSize: '0.875rem', outline: 'none', fontFamily: 'inherit', width: '260px' },
-  tableWrap: { border: '1px solid #1f1f1f', borderRadius: '12px', overflow: 'hidden' },
+  tableWrap: { border: '1px solid #1f1f1f', borderRadius: '12px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' },
   table: { width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' },
   th: { textAlign: 'left', padding: '11px 14px', background: '#0f0f0f', color: '#666', fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #1f1f1f', whiteSpace: 'nowrap' },
   td: { padding: '11px 14px', borderBottom: '1px solid #141414', color: '#ddd', verticalAlign: 'middle' },

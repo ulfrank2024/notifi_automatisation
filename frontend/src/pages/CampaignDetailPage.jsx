@@ -16,7 +16,7 @@ const s = {
   progressWrap: { background: '#1a1a1a', borderRadius: '6px', height: '8px', overflow: 'hidden', marginBottom: '28px' },
   progressFill: (pct) => ({ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg,#d4a017,#22c55e)', borderRadius: '6px', transition: 'width 0.8s ease' }),
 
-  tableWrap: { border: '1px solid #1f1f1f', borderRadius: '12px', overflow: 'hidden' },
+  tableWrap: { border: '1px solid #1f1f1f', borderRadius: '12px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' },
   table: { width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' },
   th: { textAlign: 'left', padding: '11px 14px', background: '#0f0f0f', color: '#666', fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #1f1f1f', whiteSpace: 'nowrap' },
   td: { padding: '11px 14px', borderBottom: '1px solid #141414', color: '#ddd', verticalAlign: 'middle' },
