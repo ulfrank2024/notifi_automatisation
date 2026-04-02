@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
+import bcrypt
 from jose import JWTError, jwt
-from passlib.hash import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from .config import settings
@@ -9,11 +9,11 @@ bearer_scheme = HTTPBearer()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.verify(plain, hashed)
+    return bcrypt.checkpw(plain.encode(), hashed.encode())
 
 
 def hash_password(plain: str) -> str:
-    return bcrypt.hash(plain)
+    return bcrypt.hashpw(plain.encode(), bcrypt.gensalt()).decode()
 
 
 def create_token(email: str) -> str:
@@ -26,7 +26,6 @@ def create_token(email: str) -> str:
 
 
 def require_auth(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
-    """Dépendance FastAPI — injecte dans chaque route protégée."""
     try:
         payload = jwt.decode(credentials.credentials, settings.jwt_secret, algorithms=["HS256"])
         email: str = payload.get("sub")

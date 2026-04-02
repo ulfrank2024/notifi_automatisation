@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import ChangePasswordModal from './ChangePasswordModal'
 
 const NAV = [
   { id: 'home',      icon: '📊', label: 'Tableau de bord' },
@@ -34,33 +36,46 @@ const s = {
 
 export default function Sidebar({ active, onNav }) {
   const { email, logout } = useAuth()
+  const [showChangePwd, setShowChangePwd] = useState(false)
 
   return (
-    <aside style={s.sidebar}>
-      <div style={s.logo}>
-        <span>⚡</span>
-        <span style={s.logoText}>NOTIF-FLOW</span>
-      </div>
-
-      {NAV.map(({ id, icon, label }) => (
-        <div key={id} style={s.item(active === id)} onClick={() => onNav(id)}>
-          <span style={{ fontSize: '16px', minWidth: '20px', textAlign: 'center' }}>{icon}</span>
-          {label}
+    <>
+      <aside style={s.sidebar}>
+        <div style={s.logo}>
+          <span>⚡</span>
+          <span style={s.logoText}>NOTIF-FLOW</span>
         </div>
-      ))}
 
-      <div style={s.footer}>
-        <div style={s.emailBadge}>👤 {email}</div>
-        <button
-          style={s.logoutBtn}
-          onClick={logout}
-          onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = '#1f0a0a' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#666';    e.currentTarget.style.background = 'transparent' }}
-        >
-          <span style={{ fontSize: '15px' }}>🚪</span> Déconnexion
-        </button>
-        <div style={s.version}>Jalon 1 — Beta</div>
-      </div>
-    </aside>
+        {NAV.map(({ id, icon, label }) => (
+          <div key={id} style={s.item(active === id)} onClick={() => onNav(id)}>
+            <span style={{ fontSize: '16px', minWidth: '20px', textAlign: 'center' }}>{icon}</span>
+            {label}
+          </div>
+        ))}
+
+        <div style={s.footer}>
+          <div style={s.emailBadge}>👤 {email}</div>
+          <button
+            style={s.logoutBtn}
+            onClick={() => setShowChangePwd(true)}
+            onMouseEnter={e => { e.currentTarget.style.color = '#d4a017'; e.currentTarget.style.background = '#1a1500' }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#666';    e.currentTarget.style.background = 'transparent' }}
+          >
+            <span style={{ fontSize: '15px' }}>🔑</span> Changer le mot de passe
+          </button>
+          <button
+            style={s.logoutBtn}
+            onClick={logout}
+            onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = '#1f0a0a' }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#666';    e.currentTarget.style.background = 'transparent' }}
+          >
+            <span style={{ fontSize: '15px' }}>🚪</span> Déconnexion
+          </button>
+          <div style={s.version}>Jalon 1 — Beta</div>
+        </div>
+      </aside>
+
+      {showChangePwd && <ChangePasswordModal onClose={() => setShowChangePwd(false)} />}
+    </>
   )
 }

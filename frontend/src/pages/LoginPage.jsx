@@ -30,9 +30,9 @@ const s = {
     width: '100%', background: '#1a1a1a', border: '1px solid #2a2a2a',
     borderRadius: '9px', color: '#fff', padding: '12px 14px',
     fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit',
-    boxSizing: 'border-box', transition: 'border-color 0.15s',
+    boxSizing: 'border-box', transition: 'border 0.15s',
   },
-  inputFocus: { borderColor: '#d4a017' },
+  inputFocus: { border: '1px solid #d4a017' },
   group: { marginBottom: '20px' },
 
   btn: {
