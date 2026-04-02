@@ -1,6 +1,7 @@
 const NAV = [
   { id: 'home',      icon: '📊', label: 'Accueil'   },
   { id: 'campaigns', icon: '📁', label: 'Campagnes' },
+  { id: 'send',      icon: '📨', label: 'Envoyer'   },
   { id: 'import',    icon: '📂', label: 'Importer'  },
   { id: 'contacts',  icon: '👥', label: 'Contacts'  },
 ]

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import { useAuth } from './context/AuthContext'
 import useIsMobile from './hooks/useIsMobile'
 import LoginPage from './pages/LoginPage'
@@ -7,6 +8,7 @@ import BottomNav from './components/BottomNav'
 import MobileHeader from './components/MobileHeader'
 import HomePage from './pages/HomePage'
 import CampaignsPage from './pages/CampaignsPage'
+import SendPage from './pages/SendPage'
 import ImportPage from './pages/ImportPage'
 import ContactsPage from './pages/ContactsPage'
 import CampaignDetailPage from './pages/CampaignDetailPage'
@@ -16,6 +18,13 @@ export default function App() {
   const isMobile = useIsMobile()
   const [nav, setNav]              = useState('home')
   const [selectedCampaign, setSelected] = useState(null)
+  const [campaigns, setCampaigns]  = useState([])
+
+  // Charger les campagnes une fois connecté (utilisé par SendPage)
+  useEffect(() => {
+    if (!isAuthenticated) return
+    axios.get('/api/campaigns/history').then(r => setCampaigns(r.data)).catch(() => {})
+  }, [isAuthenticated])
 
   if (!ready) {
     return (
@@ -29,6 +38,7 @@ export default function App() {
 
   function goTo(page) { setSelected(null); setNav(page) }
   function viewCampaign(campaign) { setSelected(campaign); setNav('campaign-detail') }
+  function onImportDone() { axios.get('/api/campaigns/history').then(r => setCampaigns(r.data)); goTo('campaigns') }
 
   const activeNav = nav === 'campaign-detail' ? 'campaigns' : nav
 
@@ -36,7 +46,8 @@ export default function App() {
     <>
       {nav === 'home'      && <HomePage      onViewCampaign={viewCampaign} onImport={() => goTo('import')} />}
       {nav === 'campaigns' && <CampaignsPage onView={viewCampaign} onImport={() => goTo('import')} />}
-      {nav === 'import'    && <ImportPage    onDone={() => goTo('campaigns')} />}
+      {nav === 'send'      && <SendPage      campaigns={campaigns} />}
+      {nav === 'import'    && <ImportPage    onDone={onImportDone} />}
       {nav === 'contacts'  && <ContactsPage />}
       {nav === 'campaign-detail' && selectedCampaign && (
         <CampaignDetailPage campaign={selectedCampaign} onBack={() => goTo('campaigns')} />

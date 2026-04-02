@@ -5,6 +5,7 @@ import ChangePasswordModal from './ChangePasswordModal'
 const NAV = [
   { id: 'home',      icon: '📊', label: 'Tableau de bord' },
   { id: 'campaigns', icon: '📁', label: 'Campagnes'       },
+  { id: 'send',      icon: '📨', label: 'Envoyer'         },
   { id: 'import',    icon: '📂', label: 'Importer'        },
   { id: 'contacts',  icon: '👥', label: 'Contacts'        },
 ]
