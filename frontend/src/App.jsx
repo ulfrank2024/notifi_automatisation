@@ -12,6 +12,7 @@ import SendPage from './pages/SendPage'
 import ImportPage from './pages/ImportPage'
 import ContactsPage from './pages/ContactsPage'
 import CampaignDetailPage from './pages/CampaignDetailPage'
+import ApiKeysPage from './pages/ApiKeysPage'
 
 export default function App() {
   const { isAuthenticated, ready } = useAuth()
@@ -49,6 +50,7 @@ export default function App() {
       {nav === 'send'      && <SendPage      campaigns={campaigns} />}
       {nav === 'import'    && <ImportPage    onDone={onImportDone} />}
       {nav === 'contacts'  && <ContactsPage />}
+      {nav === 'api-keys'  && <ApiKeysPage />}
       {nav === 'campaign-detail' && selectedCampaign && (
         <CampaignDetailPage campaign={selectedCampaign} onBack={() => goTo('campaigns')} />
       )}
@@ -58,7 +60,7 @@ export default function App() {
   if (isMobile) {
     return (
       <div style={{ background: '#0a0a0a', minHeight: '100vh' }}>
-        <MobileHeader />
+        <MobileHeader onNav={goTo} />
         <main style={{ paddingTop: '52px', paddingBottom: '68px', display: 'flex', justifyContent: 'center' }}>
           {page}
         </main>

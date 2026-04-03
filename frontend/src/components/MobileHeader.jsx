@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import ChangePasswordModal from './ChangePasswordModal'
 
-export default function MobileHeader() {
+export default function MobileHeader({ onNav }) {
   const { email, logout } = useAuth()
   const [menuOpen, setMenuOpen]   = useState(false)
   const [showPwd, setShowPwd]     = useState(false)
@@ -51,6 +51,7 @@ export default function MobileHeader() {
             <div style={{ color: '#555', fontSize: '0.78rem', padding: '8px 10px' }}>👤 {email}</div>
             <div style={{ borderTop: '1px solid #1a1a1a', marginTop: '8px', paddingTop: '8px' }}>
               {[
+                { icon: '🔐', label: 'API Partenaire', action: () => { onNav?.('api-keys'); setMenuOpen(false) } },
                 { icon: '🔑', label: 'Changer le mot de passe', action: () => { setShowPwd(true); setMenuOpen(false) } },
                 { icon: '🚪', label: 'Déconnexion', action: logout, red: true },
               ].map(({ icon, label, action, red }) => (

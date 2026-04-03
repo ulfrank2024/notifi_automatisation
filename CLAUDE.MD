@@ -60,7 +60,7 @@ Le backend est découpé en **micro-services indépendants** exposés via un **A
 - [x] **Console de Suivi en Temps Réel** : polling 2s, statuts 🔵→🟡→🟢/🔴, barre de progression + logs
 - [x] **Templates FR/EN** : 4 templates (confirmation commande + expédition × 2 langues), aperçu visuel
 - [x] **Module de Notification Générale** : `POST /notifications/general` — envoi groupé
-- [ ] **Architecture API "Compagnie"** : endpoint sécurisé pour automatisation future avec la compagnie partenaire
+- [x] **Architecture API "Compagnie"** : endpoint sécurisé pour automatisation future avec la compagnie partenaire
 
 ---
 
@@ -118,5 +118,7 @@ git push -u origin main
 | 2026-03-31 | Dashboard V1 React — 3 étapes | J1 | ✅ |
 | 2026-03-31 | Mapping Intelligent (ColumnMapper) | J1 | ✅ |
 | 2026-03-31 | API FastAPI (upload preview + campaigns) | J1 | ✅ |
+| 2026-04-03 | API Compagnie (clés API X-API-Key, 4 endpoints) | J2 | ✅ |
+| 2026-04-03 | Page gestion clés API (générer, copier, révoquer) | J2 | ✅ |
 
 > Ajouter chaque fonctionnalité livrée dans ce tableau avant de passer à la suivante.

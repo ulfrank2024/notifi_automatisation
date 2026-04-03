@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.security import require_auth
-from routers import auth, upload, campaigns, contacts, notifications
+from routers import auth, upload, campaigns, contacts, notifications, company_api, api_keys
 
 app = FastAPI(title="Notif-Flow API", version="1.0.0")
 
@@ -23,6 +23,10 @@ app.include_router(upload.router,         **protected)
 app.include_router(campaigns.router,      **protected)
 app.include_router(contacts.router,       **protected)
 app.include_router(notifications.router,  **protected)
+app.include_router(api_keys.router,       **protected)
+
+# Routes API Compagnie — authentification par API Key (pas JWT)
+app.include_router(company_api.router)
 
 
 @app.get("/health")

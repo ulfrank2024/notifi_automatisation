@@ -8,6 +8,7 @@ const NAV = [
   { id: 'send',      icon: '📨', label: 'Envoyer'         },
   { id: 'import',    icon: '📂', label: 'Importer'        },
   { id: 'contacts',  icon: '👥', label: 'Contacts'        },
+  { id: 'api-keys',  icon: '🔐', label: 'API Partenaire'  },
 ]
 
 const s = {
