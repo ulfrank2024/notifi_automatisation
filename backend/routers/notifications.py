@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from core.database import get_supabase
 from core.security import require_auth
 from services.sender import send_campaign
+from services.templates import get_all_templates, get_template
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
 
@@ -15,16 +16,11 @@ router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 class SendPayload(BaseModel):
     campaign_id:    str
-    channel:        str = "email"           # "email" | "sms" | "both"
+    channel:        str = "email"
+    template_id:    str | None = None      # Si fourni, écrase subject/email_template/sms_template
     subject:        str = "Votre commande"
-    email_template: str = (
-        "<p>Bonjour {{ prenom }} {{ nom }},</p>"
-        "<p>Votre commande <strong>{{ num_commande }}</strong> a bien été prise en compte.</p>"
-        "<p>Merci de votre confiance.</p>"
-    )
-    sms_template: str = (
-        "Bonjour {{ prenom }}, votre commande {{ num_commande }} est confirmée."
-    )
+    email_template: str = "<p>Bonjour {{ prenom }} {{ nom }},</p><p>Votre commande <strong>{{ num_commande }}</strong> est confirmée.</p>"
+    sms_template:   str = "Bonjour {{ prenom }}, votre commande {{ num_commande }} est confirmée."
 
 
 class GeneralNotifPayload(BaseModel):
@@ -37,6 +33,11 @@ class GeneralNotifPayload(BaseModel):
 
 
 # ─── Envoi campagne ──────────────────────────────────────────────────────────
+
+@router.get("/templates")
+def list_templates(_: str = Depends(require_auth)):
+    return get_all_templates()
+
 
 @router.post("/send")
 async def launch_send(
@@ -64,13 +65,24 @@ async def launch_send(
     if count == 0:
         raise HTTPException(status_code=400, detail="Aucun contact en attente dans cette campagne.")
 
+    # Résoudre le template si template_id fourni
+    subject        = payload.subject
+    email_template = payload.email_template
+    sms_template   = payload.sms_template
+    if payload.template_id:
+        tpl = get_template(payload.template_id)
+        if tpl:
+            subject        = tpl["subject"]
+            email_template = tpl["email"]
+            sms_template   = tpl["sms"]
+
     background_tasks.add_task(
         send_campaign,
         payload.campaign_id,
         payload.channel,
-        payload.subject,
-        payload.email_template,
-        payload.sms_template,
+        subject,
+        email_template,
+        sms_template,
     )
 
     return {

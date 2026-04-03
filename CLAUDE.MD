@@ -54,9 +54,12 @@ Le backend est découpé en **micro-services indépendants** exposés via un **A
 ### JALON 2 — Expédition, Notifications et Connectivité (500 $)
 **Objectif : Activation des communications et automatisation externe.**
 
-- [ ] **Passerelle de Communication** : intégration des API d'envoi Email & SMS + modèles de messages personnalisés
-- [ ] **Console de Suivi en Temps Réel** : statuts dynamiques — 🔵 En attente | 🟡 En cours | 🟢 Envoyé | 🔴 Erreur
-- [ ] **Module de Notification Générale** : envoi groupé pour annonces exceptionnelles
+- [x] **Passerelle Email** : `services/email_service.py` — Resend, multipart HTML+texte, SPF/DKIM, List-Unsubscribe, webhook bounces
+- [x] **Passerelle SMS** : `services/sms_service.py` — Twilio, mention STOP auto, troncature 120 chars
+- [x] **Envoi par batch** : `services/sender.py` — lots de 20, délai 2s, anti-spam
+- [x] **Console de Suivi en Temps Réel** : polling 2s, statuts 🔵→🟡→🟢/🔴, barre de progression + logs
+- [x] **Templates FR/EN** : 4 templates (confirmation commande + expédition × 2 langues), aperçu visuel
+- [x] **Module de Notification Générale** : `POST /notifications/general` — envoi groupé
 - [ ] **Architecture API "Compagnie"** : endpoint sécurisé pour automatisation future avec la compagnie partenaire
 
 ---
@@ -99,6 +102,19 @@ git push -u origin main
 |------|---------------|-------|--------|
 | 2026-03-31 | Moteur Python multi-format (parser.py) | J1 | ✅ |
 | 2026-03-31 | Schéma Supabase (campaigns + orders) | J1 | ✅ |
+| 2026-03-31 | Dashboard V1 React — 3 étapes | J1 | ✅ |
+| 2026-03-31 | Mapping Intelligent (ColumnMapper) | J1 | ✅ |
+| 2026-03-31 | API FastAPI (upload preview + campaigns) | J1 | ✅ |
+| 2026-04-01 | Dashboard stats + historique campagnes | J1+ | ✅ |
+| 2026-04-01 | CRUD contacts (modifier, supprimer, historique) | J1+ | ✅ |
+| 2026-04-01 | Sélection multiple + suppression en masse | J1+ | ✅ |
+| 2026-04-01 | Authentification JWT + page login | J1+ | ✅ |
+| 2026-04-02 | Responsive mobile (bottom nav, modals, tables) | J1+ | ✅ |
+| 2026-04-02 | Passerelle Email Resend (anti-spam, multipart) | J2 | ✅ |
+| 2026-04-02 | Passerelle SMS Twilio (STOP auto) | J2 | ✅ |
+| 2026-04-02 | Console temps réel (polling 2s) | J2 | ✅ |
+| 2026-04-03 | Templates FR/EN (confirmation + expédition) | J2 | ✅ |
+| 2026-04-03 | Aperçu visuel des templates dans l'interface | J2 | ✅ |
 | 2026-03-31 | Dashboard V1 React — 3 étapes | J1 | ✅ |
 | 2026-03-31 | Mapping Intelligent (ColumnMapper) | J1 | ✅ |
 | 2026-03-31 | API FastAPI (upload preview + campaigns) | J1 | ✅ |
