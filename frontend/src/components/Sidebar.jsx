@@ -4,9 +4,9 @@ import ChangePasswordModal from './ChangePasswordModal'
 
 const NAV = [
   { id: 'home',      icon: '📊', label: 'Tableau de bord' },
+  { id: 'import',    icon: '📂', label: 'Importer'        },
   { id: 'campaigns', icon: '📁', label: 'Campagnes'       },
   { id: 'send',      icon: '📨', label: 'Envoyer'         },
-  { id: 'import',    icon: '📂', label: 'Importer'        },
   { id: 'contacts',  icon: '👥', label: 'Contacts'        },
   { id: 'api-keys',  icon: '🔐', label: 'API Partenaire'  },
 ]
@@ -73,7 +73,7 @@ export default function Sidebar({ active, onNav }) {
           >
             <span style={{ fontSize: '15px' }}>🚪</span> Déconnexion
           </button>
-          <div style={s.version}>Jalon 1 — Beta</div>
+          <div style={s.version}>Jalon 2 — Beta</div>
         </div>
       </aside>
 

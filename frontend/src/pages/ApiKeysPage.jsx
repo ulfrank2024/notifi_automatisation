@@ -63,7 +63,7 @@ export default function ApiKeysPage() {
   const [revoking, setRevoking]   = useState(null)   // id en cours de confirmation
 
   const load = () => {
-    axios.get('/api-keys/').then(r => setKeys(r.data)).finally(() => setLoading(false))
+    axios.get('/api/api-keys/').then(r => setKeys(r.data)).finally(() => setLoading(false))
   }
 
   useEffect(() => { load() }, [])
@@ -72,7 +72,7 @@ export default function ApiKeysPage() {
     if (!newName.trim()) return
     setCreating(true)
     try {
-      const r = await axios.post('/api-keys/', { name: newName.trim() })
+      const r = await axios.post('/api/api-keys/', { name: newName.trim() })
       setNewKey(r.data)
       setNewName('')
       setShowCreate(false)
@@ -83,7 +83,7 @@ export default function ApiKeysPage() {
   }
 
   const handleRevoke = async (id) => {
-    await axios.delete(`/api-keys/${id}`)
+    await axios.delete(`/api/api-keys/${id}`)
     setRevoking(null)
     load()
   }
