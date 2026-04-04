@@ -12,12 +12,19 @@ class Settings(BaseSettings):
     jwt_secret:          str = "change-this-secret-in-production"
     jwt_expire_minutes:  int = 480
 
-    # Email — Resend
+    # Email — Resend (optionnel si SMTP configuré)
     resend_api_key:      str = ""
     email_from_name:     str = "Notif-Flow"
     email_from_address:  str = ""        # ex: notifications@votredomaine.com
     email_reply_to:      str = ""        # ex: support@votredomaine.com
     unsubscribe_url:     str = ""        # ex: https://votredomaine.com/unsubscribe
+
+    # Email — SMTP (Gmail ou autre, prioritaire sur Resend si smtp_user est défini)
+    smtp_host:           str = ""        # ex: smtp.gmail.com
+    smtp_port:           int = 465
+    smtp_secure:         bool = True     # True = SSL (port 465), False = STARTTLS (port 587)
+    smtp_user:           str = ""        # ex: votre@gmail.com
+    smtp_pass:           str = ""        # Mot de passe d'application Gmail
 
     # SMS — Twilio
     twilio_account_sid:  str = ""
