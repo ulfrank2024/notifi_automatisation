@@ -70,15 +70,20 @@ async def send_campaign(
                     success = False
                     error_msg += f"Email: {e} "
                     logger.warning(f"Email failed for {contact_id}: {e}")
+            elif channel in ("email", "both") and not contact.get("email"):
+                logger.info(f"Contact {contact_id} ignoré (email) : adresse manquante.")
 
-            # SMS
+            # SMS (uniquement si Twilio est configuré)
             if channel in ("sms", "both") and contact.get("phone"):
-                try:
-                    send_sms(contact["phone"], sms_template, variables)
-                except Exception as e:
-                    success = False
-                    error_msg += f"SMS: {e}"
-                    logger.warning(f"SMS failed for {contact_id}: {e}")
+                if not settings.twilio_account_sid or not settings.twilio_auth_token:
+                    logger.info(f"SMS ignoré pour {contact_id} : Twilio non configuré.")
+                else:
+                    try:
+                        send_sms(contact["phone"], sms_template, variables)
+                    except Exception as e:
+                        success = False
+                        error_msg += f"SMS: {e}"
+                        logger.warning(f"SMS failed for {contact_id}: {e}")
 
             if success:
                 _update_status(db, contact_id, "sent")
