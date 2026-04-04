@@ -41,6 +41,13 @@ def _add_unsub_block(rendered_html: str, plain_text: str, to_email: str):
     return rendered_html + unsub_block, plain_text + f"\n\n---\nPour vous désinscrire : {settings.unsubscribe_url}?email={to_email}"
 
 
+def _smtp_context() -> ssl.SSLContext:
+    """Contexte SSL avec certifi (résout le problème macOS)."""
+    import certifi
+    ctx = ssl.create_default_context(cafile=certifi.where())
+    return ctx
+
+
 def _send_via_smtp(to_email: str, subject: str, html_body: str, plain_text: str) -> dict:
     """Envoi via SMTP (Gmail SSL port 465 ou STARTTLS port 587)."""
     from_addr = settings.smtp_user
@@ -66,15 +73,16 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str, plain_text: str)
     msg.attach(MIMEText(plain_text, "plain", "utf-8"))
     msg.attach(MIMEText(html_body,  "html",  "utf-8"))
 
+    context = _smtp_context()
+
     if settings.smtp_secure:
-        context = ssl.create_default_context()
         with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, context=context) as server:
             server.login(settings.smtp_user, settings.smtp_pass)
             server.sendmail(from_addr, to_email, msg.as_string())
     else:
         with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
             server.ehlo()
-            server.starttls(context=ssl.create_default_context())
+            server.starttls(context=context)
             server.login(settings.smtp_user, settings.smtp_pass)
             server.sendmail(from_addr, to_email, msg.as_string())
 
